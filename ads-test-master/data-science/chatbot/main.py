@@ -1,6 +1,8 @@
 from transformers import (
     AutoTokenizer,
     AutoModelForQuestionAnswering,
+    TrainingArguments,
+    Trainer, pipeline,
 )
 from datasets import load_dataset
 
@@ -54,19 +56,39 @@ def process_answer_tokens(record):
 training = squad["train"].select(range(200)).map(process_answer_tokens)
 validation = squad["validation"].select(range(50)).map(process_answer_tokens)
 
+training_arguments = TrainingArguments(
+    output_dir=model_dir,
+    learning_rate=2e-5,
+    per_device_train_batch_size=4,
+    per_device_eval_batch_size=4,
+    num_train_epochs=1,
+    weight_decay=0.01,
+    save_total_limit=1,
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_arguments,
+    train_dataset=training,
+    eval_dataset=validation,
+)
+
+trainer.train()
+pipeline = pipeline("question-answering", model=model, tokenizer=tokenizer)
+
 
 def describe_model():
     """
     Describe the model type, shape, layers, etc.
     """
-    raise NotImplementedError()
+    # raise NotImplementedError()
 
 
 def report_model_performance():
     """
     Report the model's performance on the training and test datasets.
     """
-    raise NotImplementedError()
+    # raise NotImplementedError()
 
 
 def interact_with_model():
@@ -74,7 +96,7 @@ def interact_with_model():
     Accept user input from the console, in the form of a string, and output the model's predictions and its confidence score.
     Any extra data that you want to output, please do so.
     """
-    raise NotImplementedError()
+    # raise NotImplementedError()
 
 
 if __name__ == '__main__':
