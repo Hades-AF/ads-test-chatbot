@@ -1,3 +1,16 @@
+from transformers import (
+    AutoTokenizer,
+    AutoModelForQuestionAnswering,
+)
+from datasets import load_dataset
+model_name = "distilbert-base-uncased"
+model_dir = "./model_output"
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForQuestionAnswering.from_pretrained(model_name)
+
+squad = load_dataset("squad")
+
 def describe_model():
     """
     Describe the model type, shape, layers, etc.
