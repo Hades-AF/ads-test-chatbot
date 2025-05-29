@@ -25,3 +25,17 @@ For additional credit:
 * Create a simple GUI for interacting with the AI model
 * Persist the user's input and the model output when interacting with the model. 
 Can be persisted to a SQLite database (preferred), or a JSON file. Feel free to add extra metadata that could be useful later.
+
+
+## WriteUp
+* The type of model chosen and why?
+The model used here is DistilBert. I opted for this as it's an overall better version of Bert
+that has substantially better performance.
+* How the structure of the model layers were derived (if applicable)
+We are using 6 layers as per default for DistilBert.
+* How the dataset was split into training and testing
+I went with 80% to training, with 20% to testing. 
+* Possible improvements or further things to test
+Overall increasing model capacity, increasing epochs, train and eval batch size, and training data size.
+* How you prevented over fitting (if applicable)
+Added a weight decay value to prevent over fitting for large weights.

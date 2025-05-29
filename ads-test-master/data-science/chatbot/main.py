@@ -5,6 +5,7 @@ from transformers import (
     Trainer, pipeline,
 )
 from datasets import load_dataset
+import random
 
 model_name = "distilbert-base-uncased"
 model_dir = "./model_output"
@@ -78,25 +79,33 @@ pipeline = pipeline("question-answering", model=model, tokenizer=tokenizer)
 
 
 def describe_model():
-    """
-    Describe the model type, shape, layers, etc.
-    """
-    # raise NotImplementedError()
+    config = model.config
+    print("Model: DistilBert")
+    print("Layers: ", config.num_hidden_layers)
+    print("Hidden Size: ", config.hidden_size)
 
 
 def report_model_performance():
-    """
-    Report the model's performance on the training and test datasets.
-    """
-    # raise NotImplementedError()
+    train_performance = trainer.evaluate(eval_dataset=training)
+    print("Training Eval Loss:", train_performance["eval_loss"])
+    validation_performance = trainer.evaluate(eval_dataset=validation)
+    print("Validation Eval Loss:", validation_performance["eval_loss"])
 
 
 def interact_with_model():
-    """
-    Accept user input from the console, in the form of a string, and output the model's predictions and its confidence score.
-    Any extra data that you want to output, please do so.
-    """
-    # raise NotImplementedError()
+    while True:
+        question = input("Ask a question or press 'q' to exit: ")
+        if question.lower() == "q":
+            break
+
+        dataset = load_dataset("squad", split="validation[:100]")
+        dataset_context = dataset["context"]
+        context = random.choice(dataset_context)
+        result = pipeline(question=question, context=context)
+
+        print("\nContext:\n", context)
+        print("Answer:", result["answer"])
+        print("Confidence:", round(result["score"] * 100, 2), "%\n")
 
 
 if __name__ == '__main__':
